@@ -1,0 +1,48 @@
+name: One-time prune of verified equivalent branch
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-prune-equivalent-branch.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: read
+concurrency:
+  group: verified-branch-prune-${{ github.repository }}
+  cancel-in-progress: false
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove only unchanged branch with identical verified tree
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SOURCE_BRANCH: feature/wave4-two-file-calendar
+          ORIGINAL_MAIN_SHA: 35d5ffba2b85ef03553ef916d9a96ed3369050ce
+          ORIGINAL_BRANCH_SHA: c4bf28fd39f5935cfbc8a5b3eb9f9be8b94bc5f1
+          VERIFIED_TREE_SHA: 28883a79462deb8fe6b43c7f6145114608270c34
+        run: |
+          set -euo pipefail
+          branch_json=$(gh api "repos/$GH_REPO/branches/$SOURCE_BRANCH") || { echo 'Already removed'; exit 0; }
+          [[ "$(jq -r '.commit.sha' <<<"$branch_json")" == "$ORIGINAL_BRANCH_SHA" ]] || { echo 'Changed branch: preserving'; exit 0; }
+          [[ "$(jq -r '.protected' <<<"$branch_json")" == 'false' ]] || { echo 'Protected branch: preserving'; exit 0; }
+          main_now=$(gh api "repos/$GH_REPO/branches/main" --jq '.commit.sha')
+          if [[ "$main_now" != "$ORIGINAL_MAIN_SHA" ]]; then
+            comparison=$(gh api "repos/$GH_REPO/compare/$ORIGINAL_MAIN_SHA...main") || { echo 'Cannot verify main: preserving'; exit 0; }
+            [[ "$(jq -r '.behind_by' <<<"$comparison")" == '0' ]] || { echo 'main rewritten: preserving'; exit 0; }
+          fi
+          main_tree=$(gh api "repos/$GH_REPO/git/commits/$ORIGINAL_MAIN_SHA" --jq '.tree.sha')
+          branch_tree=$(gh api "repos/$GH_REPO/git/commits/$ORIGINAL_BRANCH_SHA" --jq '.tree.sha')
+          [[ "$main_tree" == "$VERIFIED_TREE_SHA" && "$branch_tree" == "$VERIFIED_TREE_SHA" ]] || { echo 'Tree difference: preserving'; exit 0; }
+          if gh api --paginate "repos/$GH_REPO/pulls?state=open&per_page=100" --jq '.[].head.ref' | grep -Fxq -- "$SOURCE_BRANCH"; then
+            echo 'Open pull request: preserving'; exit 0
+          fi
+          [[ "$(gh api "repos/$GH_REPO/branches/$SOURCE_BRANCH" --jq '.commit.sha')" == "$ORIGINAL_BRANCH_SHA" ]] || { echo 'Branch changed during validation: preserving'; exit 0; }
+          mkdir -p /tmp/prune-verified-branch
+          cd /tmp/prune-verified-branch
+          git init -q
+          gh auth setup-git --hostname github.com
+          git push --porcelain --force-with-lease="refs/heads/$SOURCE_BRANCH:$ORIGINAL_BRANCH_SHA" "https://github.com/$GH_REPO.git" ":refs/heads/$SOURCE_BRANCH"
+          echo 'Verified identical branch removed; main preserved'
