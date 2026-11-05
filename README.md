@@ -48,4 +48,4 @@ Each package owns only this provider and its passive documentation. Its `Replace
 
 ## Illustrated user guide
 
-The installed package contains exactly two provider files: `Ethiopian Amete Alem Calendar.so` and `Ethiopian Amete Alem Calendar.pdf`. Developer audits and historical model details remain in this repository; native provenance is stored in Debian control metadata.
+The installed package contains exactly two provider files: `Ethiopian Amete Alem Calendar.so` and `Calendar-Ethiopic-Amete-Alem.pdf`. Developer audits and historical model details remain in this repository; native provenance is stored in Debian control metadata.
