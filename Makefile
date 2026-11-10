@@ -3,7 +3,6 @@
 .DEFAULT_GOAL := all
 CC ?= cc
 PKG_CONFIG ?= pkg-config
-PYTHON ?= python3
 BUILD_DIR ?= build
 RESOURCE_NAME := Ethiopian Amete Alem Calendar
 COMMON_DIR := common
@@ -47,17 +46,16 @@ all: $(COMMON_ARCHIVE)
 	    -Wl,--version-script=exports.map -Wl,-z,defs -Wl,--gc-sections \
 	    $(LDFLAGS) -o "$(TARGET)" $(LDLIBS)
 check: all
-	$(PYTHON) tests/check_provider.py "$(TARGET)"
-	LANGUAGE=en_US LC_ALL=C.UTF-8 $(PYTHON) tests/check_accuracy.py "$(TARGET)"
+	bash common/calendar-tools/check.sh "$(TARGET)"
 audit-authorities: all
-	LANGUAGE=en_US LC_ALL=C.UTF-8 $(PYTHON) tests/check_accuracy.py "$(TARGET)" --authorities
+	bash common/calendar-tools/check.sh "$(TARGET)" --authorities
 clean:
 	rm -rf "$(BUILD_DIR)"
 
 .PHONY: release deb native-deb
 release:
-	$(PYTHON) packaging/release.py release
+	bash common/calendar-tools/build.sh release
 deb:
-	$(PYTHON) packaging/release.py deb --profile portable
+	bash common/calendar-tools/build.sh deb --profile portable
 native-deb:
-	$(PYTHON) packaging/release.py deb --profile aggressive
+	bash common/calendar-tools/build.sh deb --profile aggressive
