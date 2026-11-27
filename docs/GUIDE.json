@@ -1,7 +1,7 @@
 {
   "title": "Ethiopian Amete Alem Calendar",
   "intro": "Amete Alem is the Ethiopian Year of the World era convention.",
-  "structure": "The Ethiopian year contains twelve 30-day months and a final month of five or six days. The Alexandrian-style leap cycle determines Pagume's length.",
+  "structure": "The Ethiopian year contains twelve 30-day months and a final month, Pagume, of five days ordinarily or six when the arithmetic year has positive remainder 3 modulo 4.",
   "sections": [
     {
       "name": "Meskerem",
@@ -69,12 +69,13 @@
       "special": true
     }
   ],
-  "model": "The provider uses Ethiopian arithmetic with an era offset of 5500 years relative to Amete Mihret. The same underlying day has the same month and day in both conventions.",
+  "model": "Subtract 5500 from the displayed Amete Alem year to obtain arithmetic year y. For month m and day d, JDN = 1724221 - 1 + 365*(y-1) + floor(y/4) + 30*(m-1) + d. The inverse arithmetic year is floor((4*(JDN-1724221)+1463)/1461); add 5500 for display. The same underlying day has the same month and day in both Ethiopian era conventions.",
   "example": "Year 2018 Amete Mihret corresponds to year 7518 Amete Alem on the same month and day.",
   "history": "Ethiopian historical and religious references may employ distinct era counts. The era name and date convention must be identified before interpreting such a record.",
   "limits": "A separate provider, not an alias of Amete Mihret. Arithmetic continuation does not certify every historical use.",
   "sources": [
     "https://github.com/Infiltrator-Projects/Calendar-Ethiopic-Amete-Alem",
-    "Model evidence: https://github.com/Infiltrator-Projects/Calendar-Ethiopic-Amete-Alem/blob/main/docs/MODEL.md"
+    "Model evidence: https://github.com/Infiltrator-Projects/Calendar-Ethiopic-Amete-Alem/blob/main/docs/MODEL.md",
+    "Arithmetic implementation: https://github.com/Infiltrator-Projects/Calendar-Ethiopic-Amete-Alem/blob/main/src/calendars/engine/calendar-arithmetic-coptic.c"
   ]
 }
