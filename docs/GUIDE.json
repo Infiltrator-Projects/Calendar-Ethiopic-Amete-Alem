@@ -1,13 +1,7 @@
 {
   "title": "Ethiopian Amete Alem Calendar",
-  "intro": "A separate Ethiopian year-counting tradition. Amete Alem dates use the thirteen-month Ethiopian year structure but a different count of years from Amete Mihret.",
-  "summary": "Twelve 30-day months and a short thirteenth month. Amete Alem year numbers are 5,500 higher than Amete Mihret year numbers.",
-  "origin": "Amete Alem means 'Year of the World'. It is a separate Ethiopian era convention, not an alias for the Amete Mihret count.",
-  "ring_label": "13",
-  "ring_caption": "MONTHS",
-  "diagram_title": "THE THIRTEEN-MONTH YEAR",
-  "structure": "Twelve months have thirty days each. The thirteenth, Pagume, has five days in an ordinary year or six in a leap year.",
-  "diagram_caption": "12 REGULAR MONTHS + PAGUME",
+  "intro": "Amete Alem is the Ethiopian Year of the World era convention.",
+  "structure": "The Ethiopian year contains twelve 30-day months and a final month of five or six days. The Alexandrian-style leap cycle determines Pagume's length.",
   "sections": [
     {
       "name": "Meskerem",
@@ -75,9 +69,12 @@
       "special": true
     }
   ],
-  "pattern_note": "A calendar date can have the same month and day in the Amete Mihret and Amete Alem systems while carrying very different year numbers.",
-  "history": "Ethiopian calendar traditions use different eras for numbering years. The Amete Alem count is especially important when interpreting historical and religious year references.",
-  "example": "If a date is year 2018 in Amete Mihret, the same date is year 7518 in Amete Alem under this 5,500-year convention.",
-  "limits": "This provider implements the Amete Alem arithmetic and its own era. It does not replace the separate Amete Mihret calendar, nor does mathematical continuation certify every historical use.",
-  "source": "https://github.com/Infiltrator-Projects/Calendar-Ethiopic-Amete-Alem"
+  "model": "The provider uses Ethiopian arithmetic with an era offset of 5500 years relative to Amete Mihret. The same underlying day has the same month and day in both conventions.",
+  "example": "Year 2018 Amete Mihret corresponds to year 7518 Amete Alem on the same month and day.",
+  "history": "Ethiopian historical and religious references may employ distinct era counts. The era name and date convention must be identified before interpreting such a record.",
+  "limits": "A separate provider, not an alias of Amete Mihret. Arithmetic continuation does not certify every historical use.",
+  "sources": [
+    "https://github.com/Infiltrator-Projects/Calendar-Ethiopic-Amete-Alem",
+    "Model evidence: https://github.com/Infiltrator-Projects/Calendar-Ethiopic-Amete-Alem/blob/main/docs/MODEL.md"
+  ]
 }
